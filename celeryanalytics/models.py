@@ -17,4 +17,4 @@ class CeleryTaskFailed(models.Model):
     time = models.DateTimeField()
 
     def __str__(self):
-        return "%s failed at: %s with error %s" % (self.task, self.time.strftime("%Y-%m-%d %H:%M:%S"), excep)
+        return "%s failed at: %s with error %s" % (self.task, self.time.strftime("%Y-%m-%d %H:%M:%S"), self.excep)
