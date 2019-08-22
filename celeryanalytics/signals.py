@@ -13,7 +13,7 @@ def process_failure_signal(exception, traceback, sender, task_id,
     CeleryTaskFailed.objects.create(task = sender.__class__.__name__,
                                     time=datetime.datetime.utcnow().replace(tzinfo=timezone.utc),
                                     excep=str(exception if exception else "Unknown"),
-                                    trace=str(tb.print_tb(traceback) if traceback else "None"))
+                                    trace=str(tb.format_exc() if traceback else "None"))
 
 
 @task_success.connect
