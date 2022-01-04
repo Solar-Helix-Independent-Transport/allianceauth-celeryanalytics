@@ -8,11 +8,25 @@ With your venv active,
 
 Pip install `pip install -U git+https://github.com/pvyParts/allianceauth-celeryanalytics.git`
 
-Add `'celeryanalytics',` to your local.py, run migrations a restart auth.
+Add `celeryanalytice` to your `INSTALLES_APPS` in your `local.py`
+
+Also add the following cron job:
+
+```python
+## AA Celery Analytics Housekeeping
+CELERYBEAT_SCHEDULE["celeryanalytics.tasks.run_housekeeping"] = {
+    "task": "celeryanalytics.tasks.run_housekeeping",
+    "schedule": crontab(minute=0, hour=0),
+}
+```
 
 This module has no permissions or views. it will start logging all completed and failed tasks on install using the celery signals. 
 
 ## Settings 
+
+`CA_HOUSEKEEPING_DB_BACKLOG` defines how long (in days) records should be kept in 
+your database. Default is 10 days.
+
 if you are using a results fed app you may wish to limit he result spam to database.
 in your `local.py` add the setting `CA_RESULT_MAX_LEN=1000` set the integer to what ever you want as your max length
 View the failed tasks in admin of your auth. as below; 
