@@ -6,11 +6,27 @@ celery task analytics for [Alliance Auth](https://gitlab.com/allianceauth/allian
 
 With your venv active,
 
-Pip install `pip install -U git+https://github.com/pvyParts/allianceauth-celeryanalytics.git`
+  1. Pip install
+  
+      `pip install -U git+https://github.com/pvyParts/allianceauth-celeryanalytics.git`
 
-Add `celeryanalytics` to your `INSTALLED_APPS` in your `local.py`
+  2. Add `celeryanalytics` to your `INSTALLED_APPS` in your `local.py`
 
+  3. From terminal run migrations
+
+     `python manage.py migrate celeryanalytics`
+
+  4. **Optional** if you wish to havve the module cealup old tasks its self run 
+ 
+     `python manage.py ca_setup_task`
+ 
+## Usage
 This module has no permissions or views. it will start logging all completed and failed tasks on install using the celery signals.
+
+### Cleanup 
+If you wish to perform a tidyup of the database you can run the collowing command from your terminal
+
+`python manage.py ca_run_housekeeping`
 
 ## Settings
 
