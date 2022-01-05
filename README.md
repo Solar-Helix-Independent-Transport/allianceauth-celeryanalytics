@@ -7,8 +7,8 @@ celery task analytics for [Alliance Auth](https://gitlab.com/allianceauth/allian
 With your venv active,
 
   1. Pip install
-  
-      `pip install -U git+https://github.com/pvyParts/allianceauth-celeryanalytics.git`
+
+      `pip install -U git+https://github.com/Solar-Helix-Independent-Transport/allianceauth-celeryanalytics`
 
   2. Add `celeryanalytics` to your `INSTALLED_APPS` in your `local.py`
 
