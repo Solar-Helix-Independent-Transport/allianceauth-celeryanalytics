@@ -8,7 +8,7 @@ With your venv active,
 
 Pip install `pip install -U git+https://github.com/pvyParts/allianceauth-celeryanalytics.git`
 
-Add `celeryanalytice` to your `INSTALLES_APPS` in your `local.py`
+Add `celeryanalytics` to your `INSTALLED_APPS` in your `local.py`
 
 Also add the following cron job:
 
