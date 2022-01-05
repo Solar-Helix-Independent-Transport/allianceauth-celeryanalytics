@@ -1,4 +1,6 @@
 import os
+from celeryanalytics import __version__
+
 from setuptools import find_packages, setup
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
@@ -8,7 +10,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='allianceauth-celeryanalytics',
-    version='0.0.0.1a1',
+    version=__version__,
     packages=find_packages(),
     include_package_data=True,
     license='GNU General Public License v3 (GPLv3)',
