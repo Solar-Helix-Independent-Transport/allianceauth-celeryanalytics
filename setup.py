@@ -16,6 +16,7 @@ setup(
     license='GNU General Public License v3 (GPLv3)',
     description='Alliance Auth Plugin',
     long_description=README,
+    long_description_content_type="text/markdown",
     url='https://github.com/pvyParts/allianceauth-celeryanalytics',
     author='ak',
     author_email='ak@ak.auth',
