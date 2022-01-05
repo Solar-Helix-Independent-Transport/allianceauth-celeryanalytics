@@ -8,7 +8,7 @@ With your venv active,
 
 1. Pip install
 
-      `pip install -U git+https://github.com/Solar-Helix-Independent-Transport/allianceauth-celeryanalytics`
+      `pip install -U allianceauth-celeryanalytics`
 
 2. Add `celeryanalytics` to your `INSTALLED_APPS` in your `local.py`
 
