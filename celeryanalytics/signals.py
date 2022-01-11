@@ -21,9 +21,9 @@ def _calc_runtime(task_id):
 @task_failure.connect
 def process_failure_signal(exception, traceback, sender, task_id,
                            signal, args, kwargs, einfo, **kw):
-    logger.info("Celery task_failure! %s" % sender.__class__.__name__)
+    logger.info("Celery task_failure! %s.%s" % (sender.__class__.__module__, sender.__class__.__name__))
     runtime = _calc_runtime(task_id)
-    CeleryTaskFailed.objects.create(task = sender.__class__.__name__,
+    CeleryTaskFailed.objects.create(task= f"{sender.__class__.__module__}.{sender.__class__.__name__}",
                                     time=datetime.datetime.utcnow().replace(tzinfo=timezone.utc),
                                     runtime=runtime,
                                     excep=str(exception if exception else "Unknown"),
@@ -32,13 +32,13 @@ def process_failure_signal(exception, traceback, sender, task_id,
 
 @task_success.connect
 def celery_success_signal(sender, result=None, **kwargs):
-    logger.info("Celery task_success! %s" % sender.__class__.__name__)
+    logger.info("Celery task_success! %s.%s" % (sender.__class__.__module__, sender.__class__.__name__))
     runtime = _calc_runtime(sender.request.id)
     result = str(result)
     if app_settings.CA_RESULT_MAX_LEN > 0:
         result = result[:app_settings.CA_RESULT_MAX_LEN]
         
-    CeleryTaskCompleted.objects.create(task=sender.__class__.__name__,
+    CeleryTaskCompleted.objects.create(task= f"{sender.__class__.__module__}.{sender.__class__.__name__}",
                                        result=str(result),
                                        runtime=runtime,
                                        time=datetime.datetime.utcnow().replace(tzinfo=timezone.utc))
