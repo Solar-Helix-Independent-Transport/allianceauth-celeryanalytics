@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import re_path
 from django.urls import path
 
 from . import views
@@ -6,5 +6,5 @@ from . import views
 app_name = 'celery'
 
 urlpatterns = [
-    #url(r'^celery/$', views.celery_admin_view, name='celery_mon'),
+    #re_path(r'^celery/$', views.celery_admin_view, name='celery_mon'),
 ]
