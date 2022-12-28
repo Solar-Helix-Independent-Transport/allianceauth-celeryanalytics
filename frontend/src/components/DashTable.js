@@ -36,7 +36,7 @@ export const Dashboard = () => {
           let q = key.split("\u0006\u0016");
           console.log(key, data[key], q);
           return (
-            <Panel style={{ width: "500px", height: "500px", margin: "5px" }}>
+            <Panel style={{ width: "500px", margin: "5px" }}>
               <Panel.Heading>
                 <h4 className="text-center">
                   {q[0]} ( Priority {typeof q[1] === "undefined" ? "0" : q[1]} ){" "}
