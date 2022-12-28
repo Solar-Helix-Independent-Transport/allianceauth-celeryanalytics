@@ -1,4 +1,4 @@
 include README.md
 recursive-include celeryanalytics/ *.py
-recursive-include celeryanalytics/templates/ *.html
-recursive-include celeryanalytics/static *.*
+recursive-include celeryanalytics/templates *
+recursive-include celeryanalytics/static *
