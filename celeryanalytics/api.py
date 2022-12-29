@@ -39,23 +39,17 @@ def get_character_status(request):
     with app_or_default(None) as celery_app:
         try:
             que = [getattr(settings, 'CELERY_DEFAULT_QUEUE', 'celery')]
-            try:
-                for queue_info in celery_app.control.inspect().active_queues().values():
-                    que.append(queue_info[0]['name'])
-            except AttributeError:
-                pass # just the defaults...
+            routes = celery_app.conf.get("task_routes", {})
+            prio_steps = celery_app.conf.get("broker_transport_options", {}).get("priority_steps", [])
+            for r, q in routes.items():
+                if q['queue'] not in que:
+                    que.append(q['queue'])
             for queue_info in que:
                 queue_prefix = queue_info
-                queues = [f"{queue_prefix}",  # TODO check the config for this and build properly...
-                        f"{queue_prefix}\x06\x161",
-                        f"{queue_prefix}\x06\x162",
-                        f"{queue_prefix}\x06\x163",
-                        f"{queue_prefix}\x06\x164",
-                        f"{queue_prefix}\x06\x165",
-                        f"{queue_prefix}\x06\x166",
-                        f"{queue_prefix}\x06\x167",
-                        f"{queue_prefix}\x06\x168",
-                        f"{queue_prefix}\x06\x169"]
+                _join_str = "\x06\x16"
+                queues = [f"{queue_prefix}"]
+                for q_prio in prio_steps:
+                    queues.append(f"{queue_prefix}{_join_str}{q_prio}")
                 with celery_app.pool.acquire(block=True) as conn:
                     for queue_name in queues:
                         _pending = {}
