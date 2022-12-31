@@ -15,6 +15,7 @@ With your venv active,
 3. From terminal run migrations
 
      `python manage.py migrate celeryanalytics`
+     `python manage.py collectstatic`
 
 4. **Optional** if you wish to havve the module cealup old tasks its self run 
 
@@ -35,6 +36,8 @@ your database. Default is 14 days.
 
 `CA_RESULT_MAX_LEN` if you are using a results fed app you may wish to limit the result spam to database.
 in your `local.py` add the setting `CA_RESULT_MAX_LEN=1000` set the integer to what ever you want as your max length. Default is `-1` or unlimited.
+
+`CA_LOG_TO_BD` If you dont want the module to log to database and only are intereseted in the queue tools, set this to `False`. Default is `True`
 
 
 View the failed tasks in admin of your auth. as below;
