@@ -1,2 +1,2 @@
 default_app_config = 'celeryanalytics.apps.CeleryAnalyticsConfig'
-__version__ = "0.0.4a6"
+__version__ = "0.0.4a7"
