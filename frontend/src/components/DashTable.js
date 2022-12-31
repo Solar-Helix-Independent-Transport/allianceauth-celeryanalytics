@@ -19,6 +19,18 @@ export const Dashboard = () => {
 
   if (error) return <ErrorLoader />;
 
+  let data_tree = {};
+
+  Object.keys(data).forEach((key) => {
+    let q = key.split("\u0006\u0016");
+    console.log(q);
+    const prio = typeof q[1] === "undefined" ? 0 : q[1];
+    if (!(q[0] in data_tree)) {
+      data_tree[q[0]] = {};
+    }
+    data_tree[q[0]][prio] = data[key];
+  });
+  console.log(data_tree);
   return (
     <ErrorBoundary>
       <h1 className="text-center">
@@ -27,32 +39,37 @@ export const Dashboard = () => {
       </h1>
       <p className="text-center">
         {" "}
-        <Label  bsStyle={isFetching ? "info": "default"}>
+        <Label bsStyle={isFetching ? "info" : "default"}>
           Auto Refresh: {isFetching ? "Refreshing" : "Waiting (10s)"}
         </Label>
       </p>
       <div className="flex-container">
-        {Object.keys(data).map((key) => {
-          let q = key.split("\u0006\u0016");
-          console.log(key, data[key], q);
+        {Object.keys(data_tree).map((key) => {
           return (
-            <Panel style={{ width: "500px", margin: "5px" }}>
-              <Panel.Heading>
-                <h4 className="text-center">
-                  {q[0]} ( Priority {typeof q[1] === "undefined" ? "0" : q[1]} ){" "}
-                </h4>
-              </Panel.Heading>
-              <Panel.Body>
-                {data[key].map((_key) => {
-                  console.log(_key, data[key][_key]);
-                  return (
-                    <p>
-                      {_key['name']}: {_key['total']}
-                    </p>
-                  );
-                })}
-              </Panel.Body>
-            </Panel>
+            <>
+              <Panel style={{ width: "500px", margin: "5px" }}>
+                <Panel.Heading>
+                  <h4 className="text-center">{key}</h4>
+                </Panel.Heading>
+                <Panel.Body>
+                  {Object.keys(data_tree[key]).map((prio) => {
+                    return (
+                      <>
+                        <h4 className="text-center">Priority {prio}</h4>
+                        {data_tree[key][prio].map((task) => {
+                          return (
+                            <p>
+                              {task["name"]} <div className="pull-right">{task["total"]}</div>
+                            </p>
+                          );
+                        })}
+                        <hr />
+                      </>
+                    );
+                  })}
+                </Panel.Body>
+              </Panel>
+            </>
           );
         })}
       </div>
