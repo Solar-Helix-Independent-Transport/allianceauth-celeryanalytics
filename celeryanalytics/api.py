@@ -91,7 +91,9 @@ def get_tasks_active(request):
                 for t in d:
                     args = ", ".join(map(str, t['args']))
                     kwargs = ", ".join([f'{key}={value}' for key, value in t['kwargs'].items()])
-                    _tasks.append(f"{t['name']}({args} {kwargs})")
+                    if len(kwargs):
+                        args += ", "
+                    _tasks.append(f"{t['name']}({args}{kwargs})")
                 if len(_tasks):
                     active.append({
                         "name":w[7:],
