@@ -89,16 +89,26 @@ def get_tasks_active(request):
 
 @api.get(
     "celery/status/",
-    response={200: dict, 403: str},
+    response={200: list, 403: str},
     tags=["Admin"]
 )
-def get_tasks_status(request):
-    active = {}
+def get_worker_status(request):
+    workers = []
     if not request.user.is_superuser:
         return 403, "Permission Denied!"
     with app_or_default(None) as celery_app:
         _ap = celery_app.control.inspect().stats()
-    return 200, _ap
+        for w, d in _ap.items():
+            _t = 0
+            for t,c in d['total'].items():
+                _t += c
+            _w = {
+                "name": w[7:],
+                "total": _t,
+                "uptime": d['uptime']
+            }
+            workers.append(_w)
+    return 200, sorted(workers, key=lambda item: item["name"])
 
 
 @api.get(
