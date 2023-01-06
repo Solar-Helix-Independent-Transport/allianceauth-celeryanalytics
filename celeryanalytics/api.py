@@ -85,7 +85,7 @@ def get_tasks_active(request):
         _ap = celery_app.control.inspect()
         try:
             _act = _ap.active()
-            print(_act)
+            logger.warning(_act)
             for w, d in _act.items():
                 _tasks = []
                 for t in d:
@@ -99,7 +99,7 @@ def get_tasks_active(request):
                     })
         except Exception as e:
             logger.exception(e)
-    return 200, sorted(active, key=lambda item: item["name"])
+    return 200, active
 
 
 @api.get(
