@@ -44,7 +44,7 @@ export const Dashboard = () => {
             />
           </Nav>
         </Navbar>
-        ;
+
       </div>
       {workers && (
         <div>
