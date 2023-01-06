@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 
 api = NinjaAPI(title="Celery API", version="0.0.1",
-               urls_namespace='celery:api', auth=django_auth, csrf=True,
-               openapi_url=settings.DEBUG and "/openapi.json" or "")
+               urls_namespace='celery:api', auth=django_auth, csrf=True)#,
+               #openapi_url=settings.DEBUG and "/openapi.json" or "")
 
 
 def cache_page_data(f):
@@ -32,7 +32,7 @@ def cache_page_data(f):
     response={200: dict, 403: str},
     tags=["Admin"]
 )
-def get_character_status(request):
+def get_queue_status(request):
     pending = {}
     if not request.user.is_superuser:
         return 403, "Permission Denied!"
@@ -70,3 +70,59 @@ def get_character_status(request):
             pass
 
     return 200, pending
+
+
+@api.get(
+    "celery/active/",
+    response={200: dict, 403: str},
+    tags=["Admin"]
+)
+def get_tasks_active(request):
+    active = {}
+    if not request.user.is_superuser:
+        return 403, "Permission Denied!"
+    with app_or_default(None) as celery_app:
+        _ap = celery_app.control.inspect()
+        active = _ap.active()
+    return 200, active
+
+
+@api.get(
+    "celery/status/",
+    response={200: dict, 403: str},
+    tags=["Admin"]
+)
+def get_tasks_status(request):
+    active = {}
+    if not request.user.is_superuser:
+        return 403, "Permission Denied!"
+    with app_or_default(None) as celery_app:
+        _ap = celery_app.control.inspect().stats()
+    return 200, _ap
+
+
+@api.get(
+    "celery/eta/",
+    response={200: dict, 403: str},
+    tags=["Admin"]
+)
+def get_tasks_scheduled(request):
+    scheduled = {}
+    if not request.user.is_superuser:
+        return 403, "Permission Denied!"
+    with app_or_default(None) as celery_app:
+        _ap = celery_app.control.inspect()
+        _scheduled = _ap.scheduled()
+        for q, tasks in _scheduled.items():
+            for t in tasks:
+                _tsk = t['request']['type']
+                _queue = t['request']['delivery_info']['routing_key']
+                _prio = t['priority']
+                if _queue not in scheduled:
+                    scheduled[_queue] = {}
+                if _prio not in scheduled[_queue]:
+                    scheduled[_queue][_prio] = {}
+                if _tsk not in scheduled[_queue][_prio]:
+                    scheduled[_queue][_prio][_tsk] = 0
+                scheduled[_queue][_prio][_tsk] += 1
+    return 200, scheduled
