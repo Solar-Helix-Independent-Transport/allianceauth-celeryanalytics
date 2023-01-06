@@ -95,8 +95,8 @@ def get_tasks_active(request):
                         "name":w[7:],
                         "tasks":_tasks
                     })
-        except:
-            pass
+        except Exception as e:
+            logger.exception(e)
     return 200, sorted(active, key=lambda item: item["name"])
 
 
