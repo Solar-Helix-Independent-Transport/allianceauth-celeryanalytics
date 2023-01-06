@@ -1,14 +1,14 @@
 import React from "react";
 import { Panel, Label } from "react-bootstrap";
 import { useQuery } from "react-query";
-import { loadDash } from "../apis/Dashboard";
+import { loadETAs } from "../apis/Dashboard";
 import ErrorBoundary from "./ErrorBoundary";
 import { PanelLoader } from "./PanelLoader";
 import { ErrorLoader } from "./ErrorLoader";
-export const Dashboard = () => {
+export const ScheduledTasks = () => {
   const { isLoading, error, data, isFetching } = useQuery(
-    ["celery"],
-    () => loadDash(),
+    ["celery","eta"],
+    () => loadETAs(),
     {
       refetchOnWindowFocus: false,
       refetchInterval: 10000,
@@ -19,24 +19,8 @@ export const Dashboard = () => {
 
   if (error) return <ErrorLoader />;
 
-  let data_tree = {};
-
-  Object.keys(data).forEach((key) => {
-    let q = key.split("\u0006\u0016");
-    console.log(q);
-    const prio = typeof q[1] === "undefined" ? 0 : q[1];
-    if (!(q[0] in data_tree)) {
-      data_tree[q[0]] = {};
-    }
-    data_tree[q[0]][prio] = data[key];
-  });
-  console.log(data_tree);
   return (
     <ErrorBoundary>
-      <h1 className="text-center">
-        Active Queues
-        <br />
-      </h1>
       <p className="text-center">
         {" "}
         <Label bsStyle={isFetching ? "info" : "default"}>
@@ -44,22 +28,22 @@ export const Dashboard = () => {
         </Label>
       </p>
       <div className="flex-container">
-        {Object.keys(data_tree).map((key) => {
+        {Object.keys(data).map((key) => {
           return (
             <>
-              <Panel style={{ width: "500px", margin: "5px" }}>
+              <Panel style={{ width: "400px", margin: "5px" }}>
                 <Panel.Heading>
                   <h4 className="text-center">{key}</h4>
                 </Panel.Heading>
                 <Panel.Body>
-                  {Object.keys(data_tree[key]).map((prio) => {
+                  {Object.keys(data[key]).map((prio) => {
                     return (
                       <>
                         <h4 className="text-center">Priority {prio}</h4>
-                        {data_tree[key][prio].map((task) => {
+                        {Object.keys(data[key][prio]).map((task) => {
                           return (
                             <p>
-                              {task["name"]} <div className="pull-right">{task["total"]}</div>
+                              {task} <div className="pull-right">{data[key][prio][task]}</div>
                             </p>
                           );
                         })}

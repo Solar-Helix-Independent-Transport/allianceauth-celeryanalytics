@@ -85,7 +85,6 @@ def get_tasks_active(request):
         _ap = celery_app.control.inspect()
         try:
             _act = _ap.active()
-            logger.warning(_act)
             for w, d in _act.items():
                 _tasks = []
                 for t in d:
@@ -140,16 +139,19 @@ def get_tasks_scheduled(request):
     with app_or_default(None) as celery_app:
         _ap = celery_app.control.inspect()
         _scheduled = _ap.scheduled()
-        for q, tasks in _scheduled.items():
-            for t in tasks:
-                _tsk = t['request']['type']
-                _queue = t['request']['delivery_info']['routing_key']
-                _prio = t['priority']
-                if _queue not in scheduled:
-                    scheduled[_queue] = {}
-                if _prio not in scheduled[_queue]:
-                    scheduled[_queue][_prio] = {}
-                if _tsk not in scheduled[_queue][_prio]:
-                    scheduled[_queue][_prio][_tsk] = 0
-                scheduled[_queue][_prio][_tsk] += 1
+        try:
+            for q, tasks in _scheduled.items():
+                for t in tasks:
+                    _tsk = t['request']['type']
+                    _queue = t['request']['delivery_info']['routing_key']
+                    _prio = t['priority']
+                    if _queue not in scheduled:
+                        scheduled[_queue] = {}
+                    if _prio not in scheduled[_queue]:
+                        scheduled[_queue][_prio] = {}
+                    if _tsk not in scheduled[_queue][_prio]:
+                        scheduled[_queue][_prio][_tsk] = 0
+                    scheduled[_queue][_prio][_tsk] += 1
+        except Exception as e:
+            logger.exception(e)
     return 200, scheduled
