@@ -29,7 +29,7 @@ export const ActiveTasks = () => {
         {data.map((key) => {
           return (
             <>
-              <Panel style={{ width: "100%", margin: "5px" }}>
+              <Panel style={{ margin: "5px" }}>
                 <Panel.Heading>
                   <h4 className="text-center">{key.name}</h4>
                 </Panel.Heading>
