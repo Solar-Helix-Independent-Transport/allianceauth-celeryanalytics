@@ -83,17 +83,20 @@ def get_tasks_active(request):
         return 403, "Permission Denied!"
     with app_or_default(None) as celery_app:
         _ap = celery_app.control.inspect()
-        for w, d in _ap.items():
-            _tasks = []
-            for t in d:
-                args = ", ".join(t['args'])
-                kwargs = ", ".join([f'{key}={value}' for key, value in t['kwargs'].items()])
-                _tasks.append(f"{t['name']}({args} {kwargs})")
-            if len(_tasks):
-                active.append({
-                    "name":w[7:],
-                    "tasks":_tasks
-                })
+        try:
+            for w, d in _ap.active().items():
+                _tasks = []
+                for t in d:
+                    args = ", ".join(t['args'])
+                    kwargs = ", ".join([f'{key}={value}' for key, value in t['kwargs'].items()])
+                    _tasks.append(f"{t['name']}({args} {kwargs})")
+                if len(_tasks):
+                    active.append({
+                        "name":w[7:],
+                        "tasks":_tasks
+                    })
+        except:
+            pass
     return 200, sorted(active, key=lambda item: item["name"])
 
 
