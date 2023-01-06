@@ -85,7 +85,7 @@ def get_tasks_active(request):
         _ap = celery_app.control.inspect()
         try:
             _act = _ap.active()
-            logger.debug(_act)
+            print(_act)
             for w, d in _act.items():
                 _tasks = []
                 for t in d:
