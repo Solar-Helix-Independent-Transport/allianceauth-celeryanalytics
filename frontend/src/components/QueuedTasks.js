@@ -1,23 +1,19 @@
 import React from "react";
-import { Panel, Label } from "react-bootstrap";
+import { Panel } from "react-bootstrap";
 import { useQuery } from "react-query";
 import { loadQueue } from "../apis/Dashboard";
 import ErrorBoundary from "./ErrorBoundary";
-import { PanelLoader } from "./PanelLoader";
-import { ErrorLoader } from "./ErrorLoader";
+import StatusLabel from "./StatusLabel";
+
 export const QueuedTasks = () => {
-  const { isLoading, error, data, isFetching } = useQuery(
-    ["celery","queue"],
-    () => loadQueue(),
-    {
-      refetchOnWindowFocus: false,
-      refetchInterval: 10000,
-    }
-  );
+  const { isLoading, error, data, isFetching } = useQuery({
+    queryKey: ["celery", "queue"],
+    queryFn: () => loadQueue(),
+    refetchOnWindowFocus: false,
+    refetchInterval: 15000,
+  });
 
-  if (isLoading) return <PanelLoader />;
-
-  if (error) return <ErrorLoader />;
+  if (isLoading) return <StatusLabel time={"15"} isFetching={isLoading} {...{error }} />;
 
   let data_tree = {};
 
@@ -33,12 +29,7 @@ export const QueuedTasks = () => {
   console.log(data_tree);
   return (
     <ErrorBoundary>
-      <p className="text-center">
-        {" "}
-        <Label bsStyle={isFetching ? "info" : "default"}>
-          Auto Refresh: {isFetching ? "Refreshing" : "Waiting (10s)"}
-        </Label>
-      </p>
+      <StatusLabel time={"15"} {...{ isFetching, error }} />
       <div className="flex-container">
         {Object.keys(data_tree).map((key) => {
           return (
@@ -55,7 +46,8 @@ export const QueuedTasks = () => {
                         {data_tree[key][prio].map((task) => {
                           return (
                             <p>
-                              {task["name"]} <div className="pull-right">{task["total"]}</div>
+                              {task["name"]}{" "}
+                              <div className="pull-right">{task["total"]}</div>
                             </p>
                           );
                         })}

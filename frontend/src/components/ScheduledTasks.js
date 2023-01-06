@@ -1,32 +1,22 @@
 import React from "react";
-import { Panel, Label } from "react-bootstrap";
+import { Panel } from "react-bootstrap";
 import { useQuery } from "react-query";
 import { loadETAs } from "../apis/Dashboard";
 import ErrorBoundary from "./ErrorBoundary";
-import { PanelLoader } from "./PanelLoader";
-import { ErrorLoader } from "./ErrorLoader";
+import StatusLabel from "./StatusLabel";
 export const ScheduledTasks = () => {
-  const { isLoading, error, data, isFetching } = useQuery(
-    ["celery","eta"],
-    () => loadETAs(),
-    {
-      refetchOnWindowFocus: false,
-      refetchInterval: 10000,
-    }
-  );
+  const { isLoading, error, data, isFetching } = useQuery({
+    queryKey: ["celery", "eta"],
+    queryFn: () => loadETAs(),
+    refetchOnWindowFocus: false,
+    refetchInterval: 30000,
+  });
 
-  if (isLoading) return <PanelLoader />;
-
-  if (error) return <ErrorLoader />;
+  if (isLoading) return <StatusLabel time={"30"} isFetching={isLoading} {...{error }} />;
 
   return (
     <ErrorBoundary>
-      <p className="text-center">
-        {" "}
-        <Label bsStyle={isFetching ? "info" : "default"}>
-          Auto Refresh: {isFetching ? "Refreshing" : "Waiting (10s)"}
-        </Label>
-      </p>
+      <StatusLabel time={"30"} {...{ isFetching, error }} />
       <div className="flex-container">
         {Object.keys(data).map((key) => {
           return (
@@ -43,7 +33,10 @@ export const ScheduledTasks = () => {
                         {Object.keys(data[key][prio]).map((task) => {
                           return (
                             <p>
-                              {task} <div className="pull-right">{data[key][prio][task]}</div>
+                              {task}{" "}
+                              <div className="pull-right">
+                                {data[key][prio][task]}
+                              </div>
                             </p>
                           );
                         })}

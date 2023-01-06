@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 
 api = NinjaAPI(title="Celery API", version="0.0.1",
-               urls_namespace='celery:api', auth=django_auth, csrf=True)#,
-               #openapi_url=settings.DEBUG and "/openapi.json" or "")
+               urls_namespace='celery:api', auth=django_auth, csrf=True)  # ,
+# openapi_url=settings.DEBUG and "/openapi.json" or "")
 
 
 def cache_page_data(f):
@@ -40,7 +40,8 @@ def get_queue_status(request):
         try:
             que = [getattr(settings, 'CELERY_DEFAULT_QUEUE', 'celery')]
             routes = celery_app.conf.get("task_routes", {})
-            prio_steps = celery_app.conf.get("broker_transport_options", {}).get("priority_steps", [])
+            prio_steps = celery_app.conf.get(
+                "broker_transport_options", {}).get("priority_steps", [])
             for r, q in routes.items():
                 if q['queue'] not in que:
                     que.append(q['queue'])
@@ -60,10 +61,11 @@ def get_queue_status(request):
                                 j = json.loads(task)
                                 tsk = j['headers']['task']
                                 if tsk not in _pending:
-                                    _pending[tsk] = {"name":tsk, "total":0}
+                                    _pending[tsk] = {"name": tsk, "total": 0}
                                 _pending[tsk]["total"] += 1
                             if len(_pending):
-                                pending[queue_name] = sorted(_pending.values(), key=lambda d: d['total'], reverse=True)
+                                pending[queue_name] = sorted(
+                                    _pending.values(), key=lambda d: d['total'], reverse=True)
                         except TypeError as e:
                             pass
         except AttributeError as e:
@@ -89,14 +91,15 @@ def get_tasks_active(request):
                 _tasks = []
                 for t in d:
                     args = ", ".join(map(str, t['args']))
-                    kwargs = ", ".join([f'{key}={value}' for key, value in t['kwargs'].items()])
+                    kwargs = ", ".join(
+                        [f'{key}={value}' for key, value in t['kwargs'].items()])
                     if len(kwargs):
                         args += ", "
                     _tasks.append(f"{t['name']}({args}{kwargs})")
                 if len(_tasks):
                     active.append({
-                        "name":w[7:],
-                        "tasks":_tasks
+                        "name": w[7:],
+                        "tasks": _tasks
                     })
         except Exception as e:
             logger.exception(e)
@@ -116,7 +119,7 @@ def get_worker_status(request):
         _ap = celery_app.control.inspect().stats()
         for w, d in _ap.items():
             _t = 0
-            for t,c in d['total'].items():
+            for t, c in d['total'].items():
                 _t += c
             _w = {
                 "name": w[7:],

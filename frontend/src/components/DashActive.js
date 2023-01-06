@@ -1,30 +1,23 @@
 import React from "react";
-import { Panel, Label } from "react-bootstrap";
+import { Panel } from "react-bootstrap";
 import { useQuery } from "react-query";
 import { loadActive } from "../apis/Dashboard";
 import ErrorBoundary from "./ErrorBoundary";
+import StatusLabel from "./StatusLabel";
+
 export const ActiveTasks = () => {
-  const { isLoading, error, data, isFetching } = useQuery(
-    ["celery","active"],
-    () => loadActive(),
-    {
-      refetchOnWindowFocus: false,
-      refetchInterval: 5000,
-    }
-  );
+  const { isLoading, error, data, isFetching } = useQuery({
+    queryKey: ["celery", "active"],
+    queryFn: () => loadActive(),
+    refetchOnWindowFocus: false,
+    refetchInterval: 5000,
+  });
 
-  if (isLoading) return <></>;
-
-  if (error) return <></>;
+  if (isLoading) return <StatusLabel time={"5"} isFetching={isLoading} {...{error }} />;
 
   return (
     <ErrorBoundary>
-      <p className="text-center">
-        {" "}
-        <Label bsStyle={isFetching ? "info" : "default"}>
-          Auto Refresh: {isFetching ? "Refreshing" : "Waiting (5s)"}
-        </Label>
-      </p>
+      <StatusLabel time={"5"} {...{ isFetching, error }} />
       <div className="flex-container">
         {data.map((key) => {
           return (
