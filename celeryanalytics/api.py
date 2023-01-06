@@ -78,7 +78,7 @@ def get_queue_status(request):
     tags=["Admin"]
 )
 def get_tasks_active(request):
-    active = {}
+    active = []
     if not request.user.is_superuser:
         return 403, "Permission Denied!"
     with app_or_default(None) as celery_app:
@@ -89,7 +89,7 @@ def get_tasks_active(request):
             for w, d in _act.items():
                 _tasks = []
                 for t in d:
-                    args = ", ".join(t['args'])
+                    args = ", ".join(map(str, t['args']))
                     kwargs = ", ".join([f'{key}={value}' for key, value in t['kwargs'].items()])
                     _tasks.append(f"{t['name']}({args} {kwargs})")
                 if len(_tasks):
