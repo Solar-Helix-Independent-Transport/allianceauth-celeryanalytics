@@ -74,7 +74,7 @@ def get_queue_status(request):
 
 @api.get(
     "celery/active/",
-    response={200: dict, 403: str},
+    response={200: list, 403: str},
     tags=["Admin"]
 )
 def get_tasks_active(request):
