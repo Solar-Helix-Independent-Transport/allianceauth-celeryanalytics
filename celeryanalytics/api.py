@@ -84,7 +84,9 @@ def get_tasks_active(request):
     with app_or_default(None) as celery_app:
         _ap = celery_app.control.inspect()
         try:
-            for w, d in _ap.active().items():
+            _act = _ap.active()
+            logger.debug(_act)
+            for w, d in _act.items():
                 _tasks = []
                 for t in d:
                     args = ", ".join(t['args'])
