@@ -6,7 +6,7 @@ import { ScheduledTasks } from "./ScheduledTasks";
 
 export const Dashboard = () => {
   return <>
-    <h2 className="text-center">Celery Status</h2>
+    <h2 className="text-center">Workers</h2>
     <WorkerStatus/>
     <h2 className="text-center">Active Tasks</h2>
     <ActiveTasks/>
