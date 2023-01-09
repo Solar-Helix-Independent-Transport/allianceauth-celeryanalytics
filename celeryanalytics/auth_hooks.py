@@ -4,7 +4,7 @@ from allianceauth.services.hooks import UrlHook, MenuItemHook
 
 class CeleryMenu(MenuItemHook):
     def __init__(self):
-        MenuItemHook.__init__(self, 'Task Queues',
+        MenuItemHook.__init__(self, 'Celery Stats',
                               'fas fa-tasks fa-fw',
                               'celery:celery_mon',
                               navactive=['celery:celery_mon'])

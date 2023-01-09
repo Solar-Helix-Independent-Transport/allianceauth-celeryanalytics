@@ -17,7 +17,7 @@ def _calc_runtime(task_id):
     except KeyError:
         return -1
 
-if app_settings.CA_LOG_TO_DB:
+if app_settings.CA_LOG_FAILURE_TO_DB:
     @task_failure.connect
     def process_failure_signal(exception, traceback, sender, task_id,
                             signal, args, kwargs, einfo, **kw):
@@ -30,6 +30,7 @@ if app_settings.CA_LOG_TO_DB:
                                         trace=str(tb.format_exc() if traceback else "None"))
 
 
+if app_settings.CA_LOG_SUCCESS_TO_DB:
     @task_success.connect
     def celery_success_signal(sender, result=None, **kwargs):
         logger.info("Celery task_success! %s.%s" % (sender.__class__.__module__, sender.__class__.__name__))
@@ -43,7 +44,7 @@ if app_settings.CA_LOG_TO_DB:
                                         runtime=runtime,
                                         time=datetime.datetime.utcnow().replace(tzinfo=timezone.utc))
 
-
+if app_settings.CA_LOG_SUCCESS_TO_DB or app_settings.CA_LOG_FAILURE_TO_DB:
     @task_prerun.connect
     def task_prerun_handler(signal, sender, task_id, task, args, kwargs, **extras):
         task_starts[task_id] = time()

@@ -34,7 +34,7 @@ export const QueuedTasks = () => {
         {Object.keys(data_tree).map((key) => {
           return (
             <>
-              <Panel style={{ width: "400px", margin: "5px" }}>
+              <Panel style={{ minWidth: "400px", margin: "5px" }}>
                 <Panel.Heading>
                   <h4 className="text-center">{key}</h4>
                 </Panel.Heading>

@@ -31,6 +31,5 @@ package:
 	cd frontend;yarn install;yarn build
 	python setup.py sdist
 
-
 devjs:
 	cd frontend;yarn install;yarn start
