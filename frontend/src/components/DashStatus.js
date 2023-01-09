@@ -21,7 +21,7 @@ export const WorkerStatus = () => {
       <div className="flex-container">
         {data.map((key) => {
           return (
-            <Panel style={{ width: "200px", margin: "5px" }}>
+            <Panel style={{ minWidth: "200px", margin: "5px" }}>
               <Panel.Heading>
                 <h4 className="text-center">{key.name}</h4>
               </Panel.Heading>
