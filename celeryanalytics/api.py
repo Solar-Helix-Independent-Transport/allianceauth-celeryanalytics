@@ -53,10 +53,10 @@ def get_queue_status(request):
                     queues.append(f"{queue_prefix}{_join_str}{q_prio}")
                 with celery_app.pool.acquire(block=True) as conn:
                     for queue_name in queues:
-                        _pending = {}
-                        tasks = conn.default_channel.client.lrange(
-                            queue_name, 0, -1)
                         try:
+                            _pending = {}
+                            tasks = conn.default_channel.client.lrange(
+                            queue_name, 0, -1)
                             for task in tasks:
                                 j = json.loads(task)
                                 tsk = j['headers']['task']
