@@ -1,0 +1,38 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Peter Pfeufer, 2024
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-10-09 00:06+1000\n"
+"PO-Revision-Date: 2024-03-16 01:48+0000\n"
+"Last-Translator: Peter Pfeufer, 2024\n"
+"Language-Team: German (https://app.transifex.com/alliance-auth/teams/107430/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: celeryanalytics/templates/celeryanalytics/react_base.html:177
+msgid "Loading Page"
+msgstr "Lade Seite"
+
+#: celeryanalytics/templates/celeryanalytics/react_base.html:178
+msgid "Please Wait"
+msgstr "Bitte warten"
+
+#: celeryanalytics/templates/celeryanalytics/react_base.html:196
+msgid "Error Loading JavaScript"
+msgstr "Fehler beim Laden des JavaScripts"
+
+#: celeryanalytics/templates/celeryanalytics/react_base.html:197
+msgid "Check Browser Console for Logs"
+msgstr "Prüfe die Browser Konsole für Logs"
