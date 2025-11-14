@@ -38,7 +38,7 @@ classifiers = [
 dynamic = [ "description", "version" ]
 dependencies = [
     "allianceauth<5,>=3",
-    "django-ninja>=0.19.1",
+    "django-ninja>=1.0,<2",
 ]
 
 urls.Homepage = "https://github.com/Solar-Helix-Independent-Transport/allianceauth-celeryanalytics"
