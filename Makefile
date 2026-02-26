@@ -29,7 +29,7 @@ deploy:
 
 package:
 	pip install -U hatch
-	pip install -U virtualenv
+	pip install -U virtualenv==20.39.1
 # 	cd frontend;yarn install;yarn build
 	hatch build
 
