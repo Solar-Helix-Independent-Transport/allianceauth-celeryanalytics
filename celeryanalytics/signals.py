@@ -3,6 +3,7 @@ from .models import CeleryTaskCompleted, CeleryTaskFailed
 from django.utils import timezone
 from time import time
 import datetime
+from datetime import timezone as tz
 import traceback as tb
 import logging
 from . import app_settings
@@ -24,7 +25,7 @@ if app_settings.CA_LOG_FAILURE_TO_DB:
         logger.info("Celery task_failure! %s.%s" % (sender.__class__.__module__, sender.__class__.__name__))
         runtime = _calc_runtime(task_id)
         CeleryTaskFailed.objects.create(task= f"{sender.__class__.__module__}.{sender.__class__.__name__}",
-                                        time=datetime.datetime.utcnow().replace(tzinfo=timezone.utc),
+                                        time=datetime.datetime.utcnow().replace(tzinfo=tz.utc),
                                         runtime=runtime,
                                         excep=str(exception if exception else "Unknown"),
                                         trace=str(tb.format_exc() if traceback else "None"))
@@ -42,7 +43,7 @@ if app_settings.CA_LOG_SUCCESS_TO_DB:
         CeleryTaskCompleted.objects.create(task= f"{sender.__class__.__module__}.{sender.__class__.__name__}",
                                         result=str(result),
                                         runtime=runtime,
-                                        time=datetime.datetime.utcnow().replace(tzinfo=timezone.utc))
+                                        time=datetime.datetime.utcnow().replace(tzinfo=tz.utc))
 
 if app_settings.CA_LOG_SUCCESS_TO_DB or app_settings.CA_LOG_FAILURE_TO_DB:
     @task_prerun.connect

@@ -1,0 +1,32 @@
+{
+  "_@app-libs-D6aLoimt.js": {
+    "file": "assets/@app-libs-D6aLoimt.js",
+    "name": "@app-libs",
+    "imports": [
+      "_rolldown-runtime-DF2fYuay.js"
+    ]
+  },
+  "_@bootstrap-libs-C0xLGrdL.js": {
+    "file": "assets/@bootstrap-libs-C0xLGrdL.js",
+    "name": "@bootstrap-libs",
+    "imports": [
+      "_rolldown-runtime-DF2fYuay.js",
+      "_@app-libs-D6aLoimt.js"
+    ]
+  },
+  "_rolldown-runtime-DF2fYuay.js": {
+    "file": "assets/rolldown-runtime-DF2fYuay.js",
+    "name": "rolldown-runtime"
+  },
+  "index.html": {
+    "file": "assets/index-CJCVltUC.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-DF2fYuay.js",
+      "_@bootstrap-libs-C0xLGrdL.js",
+      "_@app-libs-D6aLoimt.js"
+    ]
+  }
+}

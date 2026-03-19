@@ -29,7 +29,7 @@ def cache_page_data(f):
 
 @api.get(
     "celery/queue/",
-    response={200: dict, 403: str},
+    response={200: list, 403: str},
     tags=["Admin"]
 )
 def get_queue_status(request):
@@ -56,7 +56,10 @@ def get_queue_status(request):
                         try:
                             _pending = {}
                             tasks = conn.default_channel.client.lrange(
-                            queue_name, 0, -1)
+                                queue_name,
+                                0, 
+                                -1
+                            )
                             for task in tasks:
                                 j = json.loads(task)
                                 tsk = j['headers']['task']
@@ -64,17 +67,37 @@ def get_queue_status(request):
                                     _pending[tsk] = {"name": tsk, "total": 0}
                                 _pending[tsk]["total"] += 1
                             if len(_pending):
-                                pending[queue_name] = sorted(
-                                    _pending.values(), key=lambda d: d['total'], reverse=True)
+                                _qn = queue_name.split(_join_str)
+                                if _qn[0] not in pending:
+                                    pending[_qn[0]] = {}
+                                _pri = 0
+                                if len(_qn) > 1:
+                                    _pri = _qn[1]
+                                pending[_qn[0]][_pri] = sorted(
+                                    _pending.values(),
+                                    key=lambda d: d['total'],
+                                    reverse=True
+                                )
                         except TypeError as e:
                             pass
-            print(que)
-            print(routes)
-            print(prio_steps)
         except AttributeError as e:
             pass
 
-    return 200, pending
+    output = []
+    for q, p in pending.items():
+        _q = {
+            "name": q,
+            "queues": []
+        }
+        for _p, _it in p.items():
+            _q["queues"].append(
+                {
+                    "name": _p,
+                    "tasks": _it
+                }
+            )
+        output.append(_q)
+    return 200, output
 
 
 @api.get(
@@ -98,7 +121,13 @@ def get_tasks_active(request):
                         [f'{key}={value}' for key, value in t['kwargs'].items()])
                     if len(kwargs):
                         args += ", "
-                    _tasks.append(f"{t['name']}({args}{kwargs})")
+                    _tasks.append(
+                        {
+                            "name":t['name'],
+                            "args": f"[{args}]",
+                            "kwargs": f"({kwargs})"
+                        }
+                    )
                 if len(_tasks):
                     active.append({
                         "name": w[7:],
@@ -119,23 +148,42 @@ def get_worker_status(request):
     if not request.user.is_superuser:
         return 403, "Permission Denied!"
     with app_or_default(None) as celery_app:
-        _ap = celery_app.control.inspect().stats()
-        for w, d in _ap.items():
-            _t = 0
-            for t, c in d['total'].items():
-                _t += c
-            _w = {
-                "name": w[7:],
-                "total": _t,
-                "uptime": d['uptime']
-            }
-            workers.append(_w)
+        _in = celery_app.control.inspect()
+        _ap = _in.stats()
+        _aq = _in.active_queues()
+        if _ap:
+            for w, d in _ap.items():
+                _t = 0
+                for t, c in d['total'].items():
+                    _t += c
+                _w = {
+                    "name": w[7:],
+                    "fields": [],
+                }
+                _w["fields"].append(
+                    ["Total Tasks", _t]
+                )
+                _w["fields"].append(
+                    ["Up Time", d['uptime']]
+                )
+                _w["fields"].append(
+                    ["Type", d['pool']["implementation"].split(":")[0].split(".")[-1]]
+                )
+                _w["fields"].append(
+                    ["Concurrency", d['pool']["max-concurrency"]]
+                )
+                if _aq:
+                    for _q in _aq.get(w, []):
+                        _w["fields"].append(
+                            ["Queue", _q['name']]
+                        )
+                workers.append(_w)
     return 200, sorted(workers, key=lambda item: item["name"])
 
 
 @api.get(
     "celery/eta/",
-    response={200: dict, 403: str},
+    response={200: list, 403: str},
     tags=["Admin"]
 )
 def get_tasks_scheduled(request):
@@ -156,8 +204,24 @@ def get_tasks_scheduled(request):
                     if _prio not in scheduled[_queue]:
                         scheduled[_queue][_prio] = {}
                     if _tsk not in scheduled[_queue][_prio]:
-                        scheduled[_queue][_prio][_tsk] = 0
-                    scheduled[_queue][_prio][_tsk] += 1
+                        scheduled[_queue][_prio][_tsk] = {"name": _tsk, "total": 0}
+                    scheduled[_queue][_prio][_tsk]["total"] += 1
         except Exception as e:
             logger.exception(e)
-    return 200, scheduled
+            
+    output = []
+    for q, p in scheduled.items():
+        _q = {
+            "name": q,
+            "queues": []
+        }
+        for _p, _it in p.items():
+            _q["queues"].append(
+                {
+                    "name": _p,
+                    "tasks": list(_it.values())
+                }
+            )
+        output.append(_q)
+
+    return 200, output
