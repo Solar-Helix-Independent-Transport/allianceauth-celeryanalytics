@@ -6,7 +6,7 @@ import Spinner from "react-bootstrap/Spinner";
 import { useState } from "react";
 
 export function WorkerDivs() {
-  const [autoUpdate, setAutoUpdate] = useState(false);
+  const [autoUpdate, setAutoUpdate] = useState(true);
 
   const { isPending, isFetching, error, data, refetch } = useQuery({
     queryKey: ["workers"],

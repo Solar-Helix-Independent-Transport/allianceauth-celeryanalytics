@@ -37,7 +37,7 @@ classifiers = [
 ]
 dynamic = [ "description", "version" ]
 dependencies = [
-    "allianceauth<5,>=3",
+    "allianceauth>=3",
     "django-ninja>=1.0,<2",
 ]
 
