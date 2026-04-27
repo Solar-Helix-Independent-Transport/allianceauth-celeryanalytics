@@ -33,8 +33,8 @@ function ActiveCard({ title, queues }: ActiveCardProps) {
 
                 <Collapse in={open}>
                   <div id="example-collapse-text text-start">
-                    <p className="m-0 ms-1">Args: {task.args}</p>
-                    <p className="m-0 ms-1">Kwargs: {task.kwargs}</p>
+                    <pre className="m-0 ms-1">Args: {task.args}</pre>
+                    <pre className="m-0 ms-1">Kwargs: {task.kwargs}</pre>
                   </div>
                 </Collapse>
 
